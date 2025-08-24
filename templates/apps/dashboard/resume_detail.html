@@ -1,0 +1,49 @@
+<h2>Données extraites du CV</h2>
+
+{% if extracted_data.erreur %}
+    <p style="color:red">{{ extracted_data.erreur }}</p>
+    <pre>{{ extracted_data.texte_brut }}</pre>
+{% else %}
+    <h3>Nom :</h3> <p>{{ extracted_data.nom }}</p>
+    <h3>Email :</h3> <p>{{ extracted_data.email }}</p>
+    <h3>Téléphone :</h3> <p>{{ extracted_data.telephone }}</p>
+
+    <h3>Compétences :</h3>
+    <ul>
+        {% for skill in extracted_data.compétences %}
+            <li>{{ skill }}</li>
+        {% empty %}
+            <li>Aucune compétence détectée</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Expériences professionnelles :</h3>
+    <ul>
+        {% for exp in extracted_data.expériences_professionnelles %}
+            <li>
+                <strong>{{ exp.poste }}</strong> - {{ exp.entreprise }} ({{ exp.dates }})<br>
+                {{ exp.description }}
+            </li>
+        {% empty %}
+            <li>Aucune expérience détectée</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Formations :</h3>
+    <ul>
+        {% for form in extracted_data.formations %}
+            <li>{{ form.diplôme }} - {{ form.établissement }} ({{ form.dates }})</li>
+        {% empty %}
+            <li>Aucune formation détectée</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Langues :</h3>
+    <ul>
+        {% for lang in extracted_data.langues %}
+            <li>{{ lang }}</li>
+        {% empty %}
+            <li>Aucune langue détectée</li>
+        {% endfor %}
+    </ul>
+{% endif %}

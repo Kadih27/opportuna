@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-cbz^buomvt+n$-q$!p+)td$56slwefp-!o39tity^@&m93lctn'
 
+OPPORTUNA_MANAGMENT_MASTER_KEY = os.getenv("OPPORTUNA_MANAGMENT_MASTER_KEY")
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -32,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_volt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "apps.account",
+    "apps.home",
+    "apps.dashboard",
+    "phonenumber_field",
+    'ckeditor',
+
 ]
 
 MIDDLEWARE = [
@@ -71,6 +83,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'opportuna.wsgi.application'
 
+DEFAULT_FROM_EMAIL = "Opportuna <" + "berthekadidiatou27@gmail.com" + ">"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp-relay.brevo.com"
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+# ROOT_URLCONF = "core.urls"
+LOGIN_URL = 'login_view'
+LOGIN_REDIRECT_URL = "login_view"  # Route defined in app/urls.py
+LOGOUT_REDIRECT_URL = "logout"  # Route defined in app/urls.py
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -82,14 +107,19 @@ WSGI_APPLICATION = 'opportuna.wsgi.application'
 #     }
 # }
 
+AUTHENTICATION_BACKENDS = [
+    'apps.account.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',  # pour les autres cas
+]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'opportuna',
-        'USER': 'postgres',
-        'PASSWORD': '1234567890',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -130,9 +160,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "opportuna/static",
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

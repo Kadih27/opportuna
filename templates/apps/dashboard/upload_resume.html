@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Uploader un CV</title>
+</head>
+<body>
+    <h1>Soumettre un CV</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="resume" required>
+        <button type="submit">Analyser</button>
+    </form>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if extracted_data %}
+        <h2>Données extraites :</h2>
+        <pre>{{ extracted_data|json_script:"cv-data" }}</pre>
+    {% endif %}
+</body>
+</html>

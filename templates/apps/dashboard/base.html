@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+      {% include 'apps/dashboard/head.html' %}
+      <body id="top">
+            {% include 'apps/dashboard/header.html' %}
+            {% block content %}{% endblock %}
+            {% include 'apps/dashboard/footer.html' %}
+            {% include 'apps/dashboard/scripts.html' %}
+            {% block extra_scripts %} {% endblock %}
+      </body>
+</html>

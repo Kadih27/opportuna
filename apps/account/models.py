@@ -5,7 +5,8 @@ from django.db.models.fields import BooleanField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 # from django_cryptography.fields import encrypt
-
+from phonenumber_field.modelfields import PhoneNumberField
+from datetime import date
 
 logger = logging.getLogger("django")
 
@@ -77,23 +78,35 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     """User model."""
     USER = 1
-    ETUDIANT = 2
-    ENTREPRISE = 3
+    STUDENT = 2
+    ENTERPRISE = 3
     PROFESSOR = 4
     ADMIN = 5
     ROLE_CHOICES = (
         (USER, "USER"),
-        (ETUDIANT, "ETUDIANT"),
-        (ENTREPRISE, "ENTREPRISE"),
+        (STUDENT, "STUDENT"),
+        (ENTERPRISE, "ENTERPRISE"),
         (PROFESSOR, "PROFESSOR"),
         (ADMIN, "ADMIN"),
     )
+    MALE = 1
+    FEMALE = 2
+    GENDER_TYPE = (
+        (MALE, "Male"),
+        (FEMALE, "Female"),
+    )
 
     # username = None
-    email = models.EmailField(_("email address"), unique=True)
-    # phone_number = PhoneNumberField(_("phone number"), blank=True, max_length=128, region=None)
+    email = models.EmailField(_("email address"), unique=True, blank=False,
+                              error_messages={
+                                  'unique': "A user with that email already exists.",
+                              })
+    phone_number = PhoneNumberField(_("phone number"), blank=True, max_length=128, region=None)
     first_login = BooleanField()
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
+    gender = models.PositiveSmallIntegerField(choices=GENDER_TYPE, default=1)
+    address = models.CharField('Your Address', max_length=250, default="")
+    dob = models.DateField('Date Of Birth', default=date.today)
     # company = models.ForeignKey(
     #     'dashboard.Company',
     #     on_delete=models.DO_NOTHING,
@@ -138,11 +151,20 @@ class CustomUser(AbstractUser):
         if self.role == 1:
             user_role = 'USER'
         if self.role == 2:
-            user_role = "ETUDIANT"
+            user_role = "STUDENT"
         if self.role == 3:
-            user_role = "ENTREPRISE"
+            user_role = "ENTERPRISE"
         if self.role == 4:
             user_role = "PROFESSOR"
         if self.role == 5:
             user_role = "ADMIN"
         return user_role
+
+    @property
+    def get_gender(self):
+        user_gender = ""
+        if self.role == 1:
+            user_gender = 'Male'
+        if self.role == 2:
+            user_gender = "Female"
+        return user_gender
