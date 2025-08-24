@@ -96,7 +96,6 @@ class CustomUser(AbstractUser):
         (FEMALE, "Female"),
     )
 
-    # username = None
     email = models.EmailField(_("email address"), unique=True, blank=False,
                               error_messages={
                                   'unique': "A user with that email already exists.",
@@ -107,15 +106,6 @@ class CustomUser(AbstractUser):
     gender = models.PositiveSmallIntegerField(choices=GENDER_TYPE, default=1)
     address = models.CharField('Your Address', max_length=250, default="")
     dob = models.DateField('Date Of Birth', default=date.today)
-    # company = models.ForeignKey(
-    #     'dashboard.Company',
-    #     on_delete=models.DO_NOTHING,
-    #     null=True,
-    #     blank=True,
-    #     related_name='employees'
-    # )
-    # company = models.ForeignKey(Company, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='company')
-    # code = models.IntegerField(null=True, blank=True)
     deactivation_date = models.DateTimeField(
         _("deactivation date"),
         blank=True,
